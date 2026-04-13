@@ -1,0 +1,17 @@
+nameOverride: discovery-service
+fullnameOverride: discovery-service
+
+image:
+  repository: ghcr.io/podcast/discovery-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: discovery-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: discovery-service

@@ -1,0 +1,17 @@
+nameOverride: billing-service
+fullnameOverride: billing-service
+
+image:
+  repository: ghcr.io/podcast/billing-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: billing-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: billing-service

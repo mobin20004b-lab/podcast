@@ -1,0 +1,17 @@
+nameOverride: catalog-service
+fullnameOverride: catalog-service
+
+image:
+  repository: ghcr.io/podcast/catalog-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: catalog-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: catalog-service

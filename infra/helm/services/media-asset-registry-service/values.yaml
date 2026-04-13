@@ -1,0 +1,17 @@
+nameOverride: media-asset-registry-service
+fullnameOverride: media-asset-registry-service
+
+image:
+  repository: ghcr.io/podcast/media-asset-registry-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: media-asset-registry-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: media-asset-registry-service

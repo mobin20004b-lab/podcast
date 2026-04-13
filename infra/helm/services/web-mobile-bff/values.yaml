@@ -1,0 +1,17 @@
+nameOverride: web-mobile-bff
+fullnameOverride: web-mobile-bff
+
+image:
+  repository: ghcr.io/podcast/web-mobile-bff
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: web-mobile-bff
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: web-mobile-bff

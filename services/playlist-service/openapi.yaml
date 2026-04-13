@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Playlist Service API
+  version: 0.1.0
+  description: Baseline contract for the Playlist Service.
+servers:
+  - url: https://playlist-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: playlist_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/playlist:
+    get:
+      summary: List playlist resources.
+      operationId: list_playlist
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistListResponse'
+    post:
+      summary: Create playlist resource.
+      operationId: create_playlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResource'
+  /v1/playlist/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get playlist by id.
+      operationId: get_playlist
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch playlist by id.
+      operationId: patch_playlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaylistWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResource'
+    delete:
+      summary: Soft-delete playlist by id.
+      operationId: delete_playlist
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    PlaylistWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    PlaylistResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PlaylistListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaylistResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

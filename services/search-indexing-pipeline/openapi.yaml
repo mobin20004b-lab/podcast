@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Search Indexing Pipeline API
+  version: 0.1.0
+  description: Baseline contract for the Search Indexing Pipeline.
+servers:
+  - url: https://search-indexing-pipeline.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: search_indexing_pipeline_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/search_indexing:
+    get:
+      summary: List search_indexing resources.
+      operationId: list_search_indexing
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIndexingListResponse'
+    post:
+      summary: Create search_indexing resource.
+      operationId: create_search_indexing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchIndexingWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIndexingResource'
+  /v1/search_indexing/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get search_indexing by id.
+      operationId: get_search_indexing
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIndexingResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch search_indexing by id.
+      operationId: patch_search_indexing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchIndexingWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIndexingResource'
+    delete:
+      summary: Soft-delete search_indexing by id.
+      operationId: delete_search_indexing
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    SearchIndexingWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    SearchIndexingResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    SearchIndexingListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchIndexingResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

@@ -1,0 +1,17 @@
+nameOverride: search-indexing-pipeline
+fullnameOverride: search-indexing-pipeline
+
+image:
+  repository: ghcr.io/podcast/search-indexing-pipeline
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: search-indexing-pipeline
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: search-indexing-pipeline

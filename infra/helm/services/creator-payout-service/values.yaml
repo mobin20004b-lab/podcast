@@ -1,0 +1,17 @@
+nameOverride: creator-payout-service
+fullnameOverride: creator-payout-service
+
+image:
+  repository: ghcr.io/podcast/creator-payout-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: creator-payout-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: creator-payout-service

@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Experimentation A B Testing Service API
+  version: 0.1.0
+  description: Baseline contract for the Experimentation A B Testing Service.
+servers:
+  - url: https://experimentation-a-b-testing-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: experimentation_a_b_testing_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/experimentation_a_b_testing:
+    get:
+      summary: List experimentation_a_b_testing resources.
+      operationId: list_experimentation_a_b_testing
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentationABTestingListResponse'
+    post:
+      summary: Create experimentation_a_b_testing resource.
+      operationId: create_experimentation_a_b_testing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentationABTestingWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentationABTestingResource'
+  /v1/experimentation_a_b_testing/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get experimentation_a_b_testing by id.
+      operationId: get_experimentation_a_b_testing
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentationABTestingResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch experimentation_a_b_testing by id.
+      operationId: patch_experimentation_a_b_testing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentationABTestingWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentationABTestingResource'
+    delete:
+      summary: Soft-delete experimentation_a_b_testing by id.
+      operationId: delete_experimentation_a_b_testing
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    ExperimentationABTestingWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    ExperimentationABTestingResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ExperimentationABTestingListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperimentationABTestingResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

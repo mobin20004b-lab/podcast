@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Engagement Automation Service API
+  version: 0.1.0
+  description: Baseline contract for the Engagement Automation Service.
+servers:
+  - url: https://engagement-automation-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: engagement_automation_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/engagement_automation:
+    get:
+      summary: List engagement_automation resources.
+      operationId: list_engagement_automation
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementAutomationListResponse'
+    post:
+      summary: Create engagement_automation resource.
+      operationId: create_engagement_automation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngagementAutomationWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementAutomationResource'
+  /v1/engagement_automation/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get engagement_automation by id.
+      operationId: get_engagement_automation
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementAutomationResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch engagement_automation by id.
+      operationId: patch_engagement_automation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngagementAutomationWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementAutomationResource'
+    delete:
+      summary: Soft-delete engagement_automation by id.
+      operationId: delete_engagement_automation
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    EngagementAutomationWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    EngagementAutomationResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EngagementAutomationListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EngagementAutomationResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

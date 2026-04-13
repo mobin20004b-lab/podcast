@@ -1,0 +1,17 @@
+nameOverride: resume-continue-listening-service
+fullnameOverride: resume-continue-listening-service
+
+image:
+  repository: ghcr.io/podcast/resume-continue-listening-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: resume-continue-listening-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: resume-continue-listening-service

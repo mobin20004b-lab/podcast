@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Creator Studio BFF API
+  version: 0.1.0
+  description: Baseline contract for the Creator Studio BFF.
+servers:
+  - url: https://creator-studio-bff.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: creator_studio_bff_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/creator_studio:
+    get:
+      summary: List creator_studio resources.
+      operationId: list_creator_studio
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatorStudioListResponse'
+    post:
+      summary: Create creator_studio resource.
+      operationId: create_creator_studio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatorStudioWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatorStudioResource'
+  /v1/creator_studio/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get creator_studio by id.
+      operationId: get_creator_studio
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatorStudioResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch creator_studio by id.
+      operationId: patch_creator_studio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatorStudioWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatorStudioResource'
+    delete:
+      summary: Soft-delete creator_studio by id.
+      operationId: delete_creator_studio
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    CreatorStudioWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    CreatorStudioResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreatorStudioListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreatorStudioResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

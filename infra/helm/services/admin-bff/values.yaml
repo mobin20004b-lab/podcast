@@ -1,0 +1,17 @@
+nameOverride: admin-bff
+fullnameOverride: admin-bff
+
+image:
+  repository: ghcr.io/podcast/admin-bff
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: admin-bff
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: admin-bff

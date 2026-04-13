@@ -1,0 +1,17 @@
+nameOverride: export-and-batch-processing-service
+fullnameOverride: export-and-batch-processing-service
+
+image:
+  repository: ghcr.io/podcast/export-and-batch-processing-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: export-and-batch-processing-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: export-and-batch-processing-service

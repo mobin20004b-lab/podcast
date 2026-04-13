@@ -1,0 +1,17 @@
+nameOverride: ai-transcription-service
+fullnameOverride: ai-transcription-service
+
+image:
+  repository: ghcr.io/podcast/ai-transcription-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: ai-transcription-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: ai-transcription-service

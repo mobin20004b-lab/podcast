@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Deep Linking Share Resolution Service API
+  version: 0.1.0
+  description: Baseline contract for the Deep Linking Share Resolution Service.
+servers:
+  - url: https://deep-linking-share-resolution-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: deep_linking_share_resolution_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/deep_linking_share_resolution:
+    get:
+      summary: List deep_linking_share_resolution resources.
+      operationId: list_deep_linking_share_resolution
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeepLinkingShareResolutionListResponse'
+    post:
+      summary: Create deep_linking_share_resolution resource.
+      operationId: create_deep_linking_share_resolution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeepLinkingShareResolutionWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeepLinkingShareResolutionResource'
+  /v1/deep_linking_share_resolution/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get deep_linking_share_resolution by id.
+      operationId: get_deep_linking_share_resolution
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeepLinkingShareResolutionResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch deep_linking_share_resolution by id.
+      operationId: patch_deep_linking_share_resolution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeepLinkingShareResolutionWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeepLinkingShareResolutionResource'
+    delete:
+      summary: Soft-delete deep_linking_share_resolution by id.
+      operationId: delete_deep_linking_share_resolution
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    DeepLinkingShareResolutionWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    DeepLinkingShareResolutionResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DeepLinkingShareResolutionListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeepLinkingShareResolutionResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string
