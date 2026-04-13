@@ -1,0 +1,17 @@
+nameOverride: content-moderation-trust-and-safety-service
+fullnameOverride: content-moderation-trust-and-safety-service
+
+image:
+  repository: ghcr.io/podcast/content-moderation-trust-and-safety-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: content-moderation-trust-and-safety-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: content-moderation-trust-and-safety-service

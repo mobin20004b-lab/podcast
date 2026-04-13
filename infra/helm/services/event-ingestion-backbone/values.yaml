@@ -1,0 +1,17 @@
+nameOverride: event-ingestion-backbone
+fullnameOverride: event-ingestion-backbone
+
+image:
+  repository: ghcr.io/podcast/event-ingestion-backbone
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: event-ingestion-backbone
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: event-ingestion-backbone

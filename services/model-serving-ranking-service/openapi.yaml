@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Model Serving Ranking Service API
+  version: 0.1.0
+  description: Baseline contract for the Model Serving Ranking Service.
+servers:
+  - url: https://model-serving-ranking-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: model_serving_ranking_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/model_serving_ranking:
+    get:
+      summary: List model_serving_ranking resources.
+      operationId: list_model_serving_ranking
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelServingRankingListResponse'
+    post:
+      summary: Create model_serving_ranking resource.
+      operationId: create_model_serving_ranking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelServingRankingWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelServingRankingResource'
+  /v1/model_serving_ranking/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get model_serving_ranking by id.
+      operationId: get_model_serving_ranking
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelServingRankingResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch model_serving_ranking by id.
+      operationId: patch_model_serving_ranking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelServingRankingWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelServingRankingResource'
+    delete:
+      summary: Soft-delete model_serving_ranking by id.
+      operationId: delete_model_serving_ranking
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    ModelServingRankingWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    ModelServingRankingResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ModelServingRankingListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelServingRankingResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

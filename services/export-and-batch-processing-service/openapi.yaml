@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Export And Batch Processing Service API
+  version: 0.1.0
+  description: Baseline contract for the Export And Batch Processing Service.
+servers:
+  - url: https://export-and-batch-processing-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: export_and_batch_processing_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/export_and_batch_processing:
+    get:
+      summary: List export_and_batch_processing resources.
+      operationId: list_export_and_batch_processing
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAndBatchProcessingListResponse'
+    post:
+      summary: Create export_and_batch_processing resource.
+      operationId: create_export_and_batch_processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportAndBatchProcessingWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAndBatchProcessingResource'
+  /v1/export_and_batch_processing/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get export_and_batch_processing by id.
+      operationId: get_export_and_batch_processing
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAndBatchProcessingResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch export_and_batch_processing by id.
+      operationId: patch_export_and_batch_processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportAndBatchProcessingWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAndBatchProcessingResource'
+    delete:
+      summary: Soft-delete export_and_batch_processing by id.
+      operationId: delete_export_and_batch_processing
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    ExportAndBatchProcessingWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    ExportAndBatchProcessingResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ExportAndBatchProcessingListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportAndBatchProcessingResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

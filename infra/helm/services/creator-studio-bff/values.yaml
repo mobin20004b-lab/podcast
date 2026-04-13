@@ -1,0 +1,17 @@
+nameOverride: creator-studio-bff
+fullnameOverride: creator-studio-bff
+
+image:
+  repository: ghcr.io/podcast/creator-studio-bff
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: creator-studio-bff
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: creator-studio-bff

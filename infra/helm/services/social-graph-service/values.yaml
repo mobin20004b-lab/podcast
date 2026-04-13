@@ -1,0 +1,17 @@
+nameOverride: social-graph-service
+fullnameOverride: social-graph-service
+
+image:
+  repository: ghcr.io/podcast/social-graph-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: social-graph-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: social-graph-service

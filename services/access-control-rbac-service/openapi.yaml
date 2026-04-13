@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Access Control RBAC Service API
+  version: 0.1.0
+  description: Baseline contract for the Access Control RBAC Service.
+servers:
+  - url: https://access-control-rbac-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: access_control_rbac_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/access_control_rbac:
+    get:
+      summary: List access_control_rbac resources.
+      operationId: list_access_control_rbac
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessControlRbacListResponse'
+    post:
+      summary: Create access_control_rbac resource.
+      operationId: create_access_control_rbac
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessControlRbacWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessControlRbacResource'
+  /v1/access_control_rbac/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get access_control_rbac by id.
+      operationId: get_access_control_rbac
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessControlRbacResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch access_control_rbac by id.
+      operationId: patch_access_control_rbac
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessControlRbacWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessControlRbacResource'
+    delete:
+      summary: Soft-delete access_control_rbac by id.
+      operationId: delete_access_control_rbac
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    AccessControlRbacWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    AccessControlRbacResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AccessControlRbacListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessControlRbacResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

@@ -1,0 +1,17 @@
+nameOverride: api-gateway
+fullnameOverride: api-gateway
+
+image:
+  repository: ghcr.io/podcast/api-gateway
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: api-gateway
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: api-gateway

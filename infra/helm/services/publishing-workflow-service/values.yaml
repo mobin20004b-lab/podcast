@@ -1,0 +1,17 @@
+nameOverride: publishing-workflow-service
+fullnameOverride: publishing-workflow-service
+
+image:
+  repository: ghcr.io/podcast/publishing-workflow-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: publishing-workflow-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: publishing-workflow-service

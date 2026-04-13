@@ -1,0 +1,17 @@
+nameOverride: media-processing-service
+fullnameOverride: media-processing-service
+
+image:
+  repository: ghcr.io/podcast/media-processing-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: media-processing-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: media-processing-service

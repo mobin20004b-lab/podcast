@@ -1,27 +1,42 @@
 # User Profile Service Schema Document
 
 ## 1. Service Scope
-TBD
+The User Profile Service owns business capabilities for the `user-profile-service` bounded context and exposes internal APIs/events for other platform domains.
 
 ## 2. Owned Data Entities
-- TBD
+- `user_profile`: primary aggregate managed by this service.
+- `user_profile_revision`: immutable audit/change history for primary records.
+- `user_profile_integration_state`: outbound sync and idempotency tracking.
 
 ## 3. API Contracts
-- Transport: TBD (REST/gRPC/Event)
-- Endpoints/Methods: TBD
+- Transport: REST/JSON over HTTPS.
+- Endpoints/Methods:
+  - `GET /v1/user_profile`: list records with pagination.
+  - `POST /v1/user_profile`: create a new record.
+  - `GET /v1/user_profile/{user_profile_id}`: fetch by identifier.
+  - `PATCH /v1/user_profile/{user_profile_id}`: partial update.
+  - `DELETE /v1/user_profile/{user_profile_id}`: soft delete/deactivate.
 
 ## 4. Event Contracts
-- Produced events: TBD
-- Consumed events: TBD
+- Produced events:
+  - `user_profile.created.v1`
+  - `user_profile.updated.v1`
+  - `user_profile.deleted.v1`
+- Consumed events:
+  - `identity.user.created.v1`
+  - `compliance.retention.policy.changed.v1`
 
 ## 5. Storage Model
-- Primary datastore: TBD
-- Caching: TBD
-- Retention: TBD
+- Primary datastore: PostgreSQL (OLTP) with UUID keys.
+- Caching: Redis for hot reads and idempotency locks.
+- Retention: Active records indefinitely; soft-deleted rows retained for 90 days.
 
 ## 6. Validation & Constraints
-- TBD
+- IDs are UUIDv4.
+- `status` is an enum (`active`, `inactive`, `deleted`).
+- Writes require optimistic concurrency via `version` field.
+- Domain events must include `event_id`, `occurred_at`, and `trace_id`.
 
 ## 7. Versioning
-- Current schema version: `v0`
-- Backward compatibility notes: TBD
+- Current schema version: `v1`.
+- Backward compatibility notes: additive changes only within v1; breaking changes require v2 endpoints/events.

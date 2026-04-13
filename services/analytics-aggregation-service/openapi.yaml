@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Analytics Aggregation Service API
+  version: 0.1.0
+  description: Baseline contract for the Analytics Aggregation Service.
+servers:
+  - url: https://analytics-aggregation-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: analytics_aggregation_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/analytics_aggregation:
+    get:
+      summary: List analytics_aggregation resources.
+      operationId: list_analytics_aggregation
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsAggregationListResponse'
+    post:
+      summary: Create analytics_aggregation resource.
+      operationId: create_analytics_aggregation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyticsAggregationWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsAggregationResource'
+  /v1/analytics_aggregation/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get analytics_aggregation by id.
+      operationId: get_analytics_aggregation
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsAggregationResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch analytics_aggregation by id.
+      operationId: patch_analytics_aggregation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyticsAggregationWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsAggregationResource'
+    delete:
+      summary: Soft-delete analytics_aggregation by id.
+      operationId: delete_analytics_aggregation
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    AnalyticsAggregationWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    AnalyticsAggregationResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AnalyticsAggregationListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsAggregationResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

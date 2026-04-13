@@ -1,0 +1,17 @@
+nameOverride: auth-and-identity-service
+fullnameOverride: auth-and-identity-service
+
+image:
+  repository: ghcr.io/podcast/auth-and-identity-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: auth-and-identity-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: auth-and-identity-service

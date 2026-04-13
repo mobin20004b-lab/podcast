@@ -1,0 +1,17 @@
+nameOverride: audit-log-service
+fullnameOverride: audit-log-service
+
+image:
+  repository: ghcr.io/podcast/audit-log-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: audit-log-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: audit-log-service

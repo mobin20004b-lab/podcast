@@ -1,0 +1,17 @@
+nameOverride: comment-community-service
+fullnameOverride: comment-community-service
+
+image:
+  repository: ghcr.io/podcast/comment-community-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: comment-community-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: comment-community-service

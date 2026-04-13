@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Scheduler Workflow Orchestration Service API
+  version: 0.1.0
+  description: Baseline contract for the Scheduler Workflow Orchestration Service.
+servers:
+  - url: https://scheduler-workflow-orchestration-service.internal.v1
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe endpoint.
+      operationId: scheduler_workflow_orchestration_service_healthz
+      responses:
+        '200':
+          description: Service healthy.
+  /v1/scheduler_workflow_orchestration:
+    get:
+      summary: List scheduler_workflow_orchestration resources.
+      operationId: list_scheduler_workflow_orchestration
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerWorkflowOrchestrationListResponse'
+    post:
+      summary: Create scheduler_workflow_orchestration resource.
+      operationId: create_scheduler_workflow_orchestration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulerWorkflowOrchestrationWriteRequest'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerWorkflowOrchestrationResource'
+  /v1/scheduler_workflow_orchestration/{resource_id}:
+    parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get scheduler_workflow_orchestration by id.
+      operationId: get_scheduler_workflow_orchestration
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerWorkflowOrchestrationResource'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Patch scheduler_workflow_orchestration by id.
+      operationId: patch_scheduler_workflow_orchestration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulerWorkflowOrchestrationWriteRequest'
+      responses:
+        '200':
+          description: Resource updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerWorkflowOrchestrationResource'
+    delete:
+      summary: Soft-delete scheduler_workflow_orchestration by id.
+      operationId: delete_scheduler_workflow_orchestration
+      responses:
+        '204':
+          description: Deleted.
+components:
+  schemas:
+    SchedulerWorkflowOrchestrationWriteRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    SchedulerWorkflowOrchestrationResource:
+      type: object
+      required: [id, name, status, created_at, updated_at, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, deleted]
+        version:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    SchedulerWorkflowOrchestrationListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchedulerWorkflowOrchestrationResource'
+        next_cursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

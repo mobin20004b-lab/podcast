@@ -1,0 +1,17 @@
+nameOverride: offline-download-service
+fullnameOverride: offline-download-service
+
+image:
+  repository: ghcr.io/podcast/offline-download-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: offline-download-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: offline-download-service

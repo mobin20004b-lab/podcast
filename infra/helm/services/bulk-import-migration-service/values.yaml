@@ -1,0 +1,17 @@
+nameOverride: bulk-import-migration-service
+fullnameOverride: bulk-import-migration-service
+
+image:
+  repository: ghcr.io/podcast/bulk-import-migration-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: bulk-import-migration-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: bulk-import-migration-service

@@ -1,0 +1,17 @@
+nameOverride: rss-aggregator-and-ingestion-service
+fullnameOverride: rss-aggregator-and-ingestion-service
+
+image:
+  repository: ghcr.io/podcast/rss-aggregator-and-ingestion-service
+  tag: 0.1.0
+
+service:
+  port: 80
+  targetPort: 8080
+
+containerPort: 8080
+
+env:
+  SERVICE_NAME: rss-aggregator-and-ingestion-service
+  LOG_LEVEL: info
+  OTEL_SERVICE_NAME: rss-aggregator-and-ingestion-service
