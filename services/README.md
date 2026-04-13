@@ -1,0 +1,62 @@
+# Services Index
+
+- `api-gateway` → API Gateway
+- `web-mobile-bff` → Web/Mobile BFF
+- `creator-studio-bff` → Creator Studio BFF
+- `admin-bff` → Admin BFF
+- `webhook-ingress-service` → Webhook Ingress Service
+- `auth-and-identity-service` → Auth & Identity Service
+- `user-profile-service` → User Profile Service
+- `access-control-rbac-service` → Access Control / RBAC Service
+- `device-and-session-service` → Device & Session Service
+- `catalog-service` → Catalog Service
+- `creator-channel-service` → Creator / Channel Service
+- `publishing-workflow-service` → Publishing Workflow Service
+- `rss-aggregator-and-ingestion-service` → RSS Aggregator & Ingestion Service
+- `bulk-import-migration-service` → Bulk Import / Migration Service
+- `media-upload-service` → Media Upload Service
+- `media-processing-service` → Media Processing Service
+- `media-asset-registry-service` → Media Asset Registry Service
+- `playback-authorization-service` → Playback Authorization Service
+- `playback-session-service` → Playback Session Service
+- `telemetry-playback-tracking-service` → Telemetry / Playback Tracking Service
+- `resume-continue-listening-service` → Resume / Continue Listening Service
+- `offline-download-service` → Offline Download Service
+- `user-library-service` → User Library Service
+- `playlist-service` → Playlist Service
+- `likes-reactions-service` → Likes / Reactions Service
+- `comment-community-service` → Comment / Community Service
+- `search-api-service` → Search API Service
+- `search-indexing-pipeline` → Search Indexing Pipeline
+- `discovery-service` → Discovery Service
+- `recommendation-service` → Recommendation Service
+- `feature-pipeline-service` → Feature Pipeline Service
+- `model-serving-ranking-service` → Model Serving / Ranking Service
+- `experimentation-a-b-testing-service` → Experimentation / A-B Testing Service
+- `billing-service` → Billing Service
+- `entitlement-service` → Entitlement Service
+- `financial-ledger-reconciliation-service` → Financial Ledger / Reconciliation Service
+- `creator-payout-service` → Creator Payout Service
+- `ad-decision-service` → Ad Decision Service
+- `campaign-management-service` → Campaign Management Service
+- `ad-measurement-service` → Ad Measurement Service
+- `ai-transcription-service` → AI Transcription Service
+- `metadata-extraction-service` → Metadata Extraction Service
+- `content-moderation-trust-and-safety-service` → Content Moderation / Trust & Safety Service
+- `copyright-audio-fingerprinting-service` → Copyright / Audio Fingerprinting Service
+- `notification-service` → Notification Service
+- `notification-preference-service` → Notification Preference Service
+- `engagement-automation-service` → Engagement Automation Service
+- `clip-snippet-service` → Clip / Snippet Service
+- `social-graph-service` → Social Graph Service
+- `deep-linking-share-resolution-service` → Deep Linking / Share Resolution Service
+- `event-ingestion-backbone` → Event Ingestion Backbone
+- `analytics-aggregation-service` → Analytics Aggregation Service
+- `creator-analytics-api` → Creator Analytics API
+- `product-analytics-service` → Product Analytics Service
+- `admin-operations-service` → Admin Operations Service
+- `audit-log-service` → Audit Log Service
+- `gdpr-data-rights-service` → GDPR / Data Rights Service
+- `legal-hold-compliance-service` → Legal Hold / Compliance Service
+- `export-and-batch-processing-service` → Export & Batch Processing Service
+- `scheduler-workflow-orchestration-service` → Scheduler / Workflow Orchestration Service
