@@ -1,0 +1,4 @@
+services/api-gateway/openapi.yaml
+services/auth-and-identity-service/openapi.yaml
+services/catalog-service/openapi.yaml
+services/playback-authorization-service/openapi.yaml

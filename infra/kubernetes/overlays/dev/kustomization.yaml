@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+namespace: podcast-platform-dev
+
+nameSuffix: -dev
+
+labels:
+  - pairs:
+      environment: dev
+      workload-tier: baseline
