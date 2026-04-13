@@ -1,0 +1,39 @@
+name: Repo Guardrails
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  structure-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate key roadmap artifacts
+        run: |
+          set -euo pipefail
+          test -f plan.md
+          test -f docs/roadmap/implementation-priority-and-roadmap.md
+          test -f docs/roadmap/day-1.md
+          test -f docs/roadmap/day-2.md
+          test -f docs/roadmap/day-3.md
+
+      - name: Validate Priority 0 contract files and minimum markers
+        run: .github/scripts/validate-priority0-contracts.sh
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Lint Priority 0 OpenAPI contracts (Redocly)
+        run: |
+          set -euo pipefail
+          while IFS= read -r contract; do
+            [ -z "$contract" ] && continue
+            npx --yes @redocly/cli@latest lint "$contract"
+          done < .github/scripts/priority0-contracts.txt

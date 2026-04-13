@@ -1,0 +1,41 @@
+name: Service CI Template
+
+on:
+  workflow_call:
+    inputs:
+      service_path:
+        required: true
+        type: string
+
+jobs:
+  service-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate service scaffold
+        run: |
+          set -euo pipefail
+          test -d "${{ inputs.service_path }}"
+          test -f "${{ inputs.service_path }}/README.md"
+          test -f "${{ inputs.service_path }}/EPICS.md"
+          test -f "${{ inputs.service_path }}/schema.md"
+
+      - name: Setup Node.js
+        if: ${{ hashFiles(format('{0}/openapi.yaml', inputs.service_path)) != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Optional OpenAPI contract check
+        run: |
+          set -euo pipefail
+          if [ -f "${{ inputs.service_path }}/openapi.yaml" ]; then
+            grep -q '^openapi:' "${{ inputs.service_path }}/openapi.yaml"
+            grep -q '^info:' "${{ inputs.service_path }}/openapi.yaml"
+            grep -q '^paths:' "${{ inputs.service_path }}/openapi.yaml"
+            npx --yes @redocly/cli@latest lint "${{ inputs.service_path }}/openapi.yaml"
+          else
+            echo "No OpenAPI contract yet for ${{ inputs.service_path }} (allowed)."
+          fi
