@@ -1,0 +1,91 @@
+openapi: 3.0.3
+info:
+  title: Playback Authorization Service API
+  version: 0.1.0
+  description: Day 2 contract for entitlement-aware playback authorization.
+servers:
+  - url: https://playback-authorization.internal.v1
+paths:
+  /v1/playback/authorize:
+    post:
+      summary: Validate access and return signed playback grant.
+      operationId: authorizePlayback
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaybackAuthorizeRequest'
+      responses:
+        '200':
+          description: Playback authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybackAuthorizeResponse'
+        '403':
+          description: Not entitled or policy denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PlaybackAuthorizeRequest:
+      type: object
+      required: [episode_id, device_id, region]
+      properties:
+        episode_id:
+          type: string
+          format: uuid
+        device_id:
+          type: string
+        region:
+          type: string
+          example: US
+        client_ip:
+          type: string
+          format: ipv4
+    PlaybackAuthorizeResponse:
+      type: object
+      required: [playback_session_id, signed_url, expires_at]
+      properties:
+        playback_session_id:
+          type: string
+          format: uuid
+        signed_url:
+          type: string
+          format: uri
+        expires_at:
+          type: string
+          format: date-time
+        policy:
+          type: object
+          properties:
+            can_download:
+              type: boolean
+            max_bitrate_kbps:
+              type: integer
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string

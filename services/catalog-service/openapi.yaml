@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  title: Catalog Service API
+  version: 0.1.0
+  description: Day 2 initial read contract for podcasts and episodes.
+servers:
+  - url: https://catalog.internal.v1
+paths:
+  /v1/podcasts/{podcast_id}:
+    get:
+      summary: Fetch podcast metadata by id.
+      operationId: getPodcast
+      parameters:
+        - name: podcast_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Podcast found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Podcast'
+        '404':
+          description: Podcast not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/episodes/{episode_id}:
+    get:
+      summary: Fetch episode metadata by id.
+      operationId: getEpisode
+      parameters:
+        - name: episode_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Episode found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '404':
+          description: Episode not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Podcast:
+      type: object
+      required: [podcast_id, title, language, is_published]
+      properties:
+        podcast_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        language:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        is_published:
+          type: boolean
+    Episode:
+      type: object
+      required: [episode_id, podcast_id, title, duration_seconds, media_asset_id, published_at]
+      properties:
+        episode_id:
+          type: string
+          format: uuid
+        podcast_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        duration_seconds:
+          type: integer
+        media_asset_id:
+          type: string
+          format: uuid
+        published_at:
+          type: string
+          format: date-time
+        is_premium:
+          type: boolean
+          default: false
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string
